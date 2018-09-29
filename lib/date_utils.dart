@@ -26,13 +26,13 @@ class Utils {
   ];
 
   /// The list of days in a given month
-  static List<DateTime> daysInMonth(DateTime month) {
+  static List<DateTime> daysInMonth(DateTime month, [int pad = 0]) {
     var first = firstDayOfMonth(month);
     var daysBefore = first.weekday;
     var firstToDisplay = first.subtract(new Duration(days: daysBefore));
     var last = Utils.lastDayOfMonth(month);
 
-    var daysAfter = 7 - last.weekday;
+    var daysAfter = 7 + pad - (last.weekday % 7 + 1);
     var lastToDisplay = last.add(new Duration(days: daysAfter));
     return daysInRange(firstToDisplay, lastToDisplay).toList();
   }
@@ -86,7 +86,7 @@ class Utils {
   static Iterable<DateTime> daysInRange(DateTime start, DateTime end) sync* {
     var i = start;
     var offset = start.timeZoneOffset;
-    while (i.isBefore(end)) {
+    while (!i.isAfter(end)) {
       yield i;
       i = i.add(new Duration(days: 1));
       var timeZoneDiff = i.timeZoneOffset - offset;
